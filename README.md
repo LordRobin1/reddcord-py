@@ -1,10 +1,10 @@
 # reddcord-py
 Fetches hot posts or subreddit information from reddit. <br/>
-**Does not use `/commands`!** <br/>
-Using [praw](https://praw.readthedocs.io/en/stable/) version 7.5.0
+**Does not use `/commands`!** (yet) <br/>
+Using [asyncpraw](https://asyncpraw.readthedocs.io/en/stable/index.html) version 7.5.0
 ## Usage
 **Please don't.** 
-This was made for learning purposes. It is neither finished nor does every "feature" work. <br/>
+This bot is being developed for learning purposes. It is neither finished nor does every "feature" work. <br/>
 I advise to *just look at it* if you really want to.
 ### Still want to try?
 Put your reddit api token(s) as well as your discord api token into the `.env` file (below)inside the same directory. <br/>
