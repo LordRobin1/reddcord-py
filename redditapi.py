@@ -1,3 +1,4 @@
+#import asyncio
 import os
 import asyncpraw
 import random
@@ -11,13 +12,14 @@ def create_reddit():
     reddit = asyncpraw.Reddit(client_id = CLIENT_ID,
                          client_secret = CLIENT_SECRET,
                          user_agent = "api for reddit v1",
-                         check_for_async = False)
+                         check_for_async = True)
     return reddit
 
-async def get_images(r, sub):    
+async def get_images(sub):    
+    r = create_reddit()
     postList = []
     subreddit = await r.subreddit(sub)
-    async for submission in subreddit.hot(limit=50):
+    async for submission in subreddit.hot():
         if ".jpg" in submission.url or ".png" in submission.url:
             postList.append({"type": "image", "url": submission.url, "title": submission.title})
             continue
@@ -31,7 +33,7 @@ async def get_images(r, sub):
             postList.append({"type": "video", "url": tempurl, "title": submission.title})
             continue
         if "gallery"in submission.url:
-            submDict = {"type": "gallery", "url": submission.url, "title": submission.title}
+            postList.append({"type": "gallery", "url": submission.url, "title": submission.title})
             continue
         postList.append({"type": "text", "url": submission.url, "name": submission.name, "title": submission.title, "text": submission.selftext})
 
@@ -50,10 +52,12 @@ async def get_images(r, sub):
                 return submDict
         except Exception as e:
             print(e)
+    await r.close()
     return submDict 
     
 
-async def sub_info(r, sub):
+async def sub_info(sub):
+    r = create_reddit()
     info = await r.subreddit(sub, fetch=True)
     title = f"r/{info.display_name}"
     widgets = info.widgets
@@ -68,17 +72,17 @@ async def sub_info(r, sub):
              f"Currently {id_card.currentlyViewingCount} {online}\n" + 
              f"NSFW: {'Yes' if info.over18 else 'No'} \n\n" +                
              f"{id_card.description}")
-
+    await r.close()
+    
     return title, desc
 
 
-def testThisScript():
-    reddit = create_reddit()
+async def testThisScript():
     print('sub? ', end='')
     sub = input()
     # title, desc = sub_info(reddit, sub)
     # print(title, desc)
-    url = get_images(reddit, sub)
+    url = await get_images(sub)
     print(url)
-
-#testThisScript()
+    wait = input()
+#asyncio.run(testThisScript())
