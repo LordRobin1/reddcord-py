@@ -15,27 +15,35 @@ def create_reddit():
                          check_for_async = True)
     return reddit
 
-async def get_images(sub):    
+async def get_post(sub):    
     r = create_reddit()
     postList = []
     subreddit = await r.subreddit(sub)
     async for submission in subreddit.hot():
         if ".jpg" in submission.url or ".png" in submission.url:
-            postList.append({"type": "image", "url": submission.url, "title": submission.title})
+            postList.append({"type": "image", "imgurl": submission.url, "title": submission.title, "url": submission.permalink})
             continue
         if ".gif" in submission.url:
-            tempurl = submission.url.rsplit("?")[0]
-            tempurl = tempurl.replace("preview", "i")
-            postList.append({"type": "gif", "url": tempurl, "title": submission.title})
+            if ".gifv" in submission.url:
+                tempurl = submission.url.split("gifv")[0] + "mp4"
+                Type = "badgif"
+            else:
+                tempurl = submission.url.rsplit("?")[0].replace("preview", "i")
+                Type = "gif"
+            postList.append({"type": f"{Type}", "imgurl": tempurl, "title": submission.title, "url":submission.permalink})
+            continue
+        if "gfycat" in submission.url:
+            tempurl = submission.url + ".gif"
+            postList.append({"type": "badgif", "imgurl": tempurl, "title": submission.title, "url":submission.permalink})
             continue
         if "v.redd.it" in submission.url:
             tempurl = f"https://www.reddit.com{submission.permalink}?utm_source=share&utm_medium=web2x&context=3"
-            postList.append({"type": "video", "url": tempurl, "title": submission.title})
+            postList.append({"type": "video", "imgurl": tempurl, "title": submission.title, "url":submission.permalink})
             continue
         if "gallery"in submission.url:
-            postList.append({"type": "gallery", "url": submission.url, "title": submission.title})
+            postList.append({"type": "gallery", "imgurl": submission.url, "title": submission.title, "url":submission.permalink})
             continue
-        postList.append({"type": "text", "url": submission.url, "name": submission.name, "title": submission.title, "text": submission.selftext})
+        postList.append({"type": "text", "imgurl": "", "url": submission.permalink, "name": submission.name, "title": submission.title, "text": submission.selftext})
 
     submDict = random.choice(postList)
     print (submDict)
@@ -51,7 +59,7 @@ async def get_images(sub):
                 submDict['comment'] = comments[0].body
                 return submDict
         except Exception as e:
-            print(e)
+            print("rapi error:", e)
     await r.close()
     return submDict 
     
@@ -82,7 +90,7 @@ async def testThisScript():
     sub = input()
     # title, desc = sub_info(reddit, sub)
     # print(title, desc)
-    url = await get_images(sub)
+    url = await get_post(sub)
     print(url)
     wait = input()
 #asyncio.run(testThisScript())
