@@ -6,15 +6,14 @@ Using [discord.py](https://github.com/Rapptz/discord.py) version 2.0.1 and [asyn
 
 ## Usage
 
-**Please don't.**
-This bot is being developed for learning purposes. It is neither finished nor does every feature work.
+This bot is being developed for learning purposes. It is neither finished nor does every feature work.  
 
 ### Still want to try?
 
 Put your reddit api token(s) as well as your discord api token into the `.env` file (below) inside the same directory.  
 `.env` must be in same directory as `.py` files.  
   
-```py
+```.env
   #.env
     
   DISCORD_TOKEN = <your-DISCORD_TOKEN>  #discord
@@ -22,9 +21,10 @@ Put your reddit api token(s) as well as your discord api token into the `.env` f
   CLIENT_SECRET = <your-CLIENT_SECRET>  #reddit
   CLIENT_ID     = <your-CLIENT_ID>      #reddit
     
-```
+  ```
 
-Add bot to your server, start `bot.py` &#8594; done
+Install `discord.py`, `asyncpraw` and `python-dotenv` via pip.  
+Add bot to your server, start `bot.py` &#8594; done.
 
 ## Commands
 
